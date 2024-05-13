@@ -13,6 +13,11 @@
 
 3. **Was sind Anomalien in einer Datenbasis? Welche Arten gibt es?**
    Anomalien in einer Datenbasis sind Abweichungen oder Unregelmässigkeiten, die die Datenqualität beeinträchtigen können. Zu den Arten gehören Einfügeanomalien, Aktualisierungsanomalien und Löschanomalien.
+   - Update-Anomalie
+   - Schreib-Anomalie
+   - Lese-Anomalie
+   
+   Es sind Fehler in der Datenbank
 
 4. **Gibt es redundante "Daten"? Warum?**
    Ja, redundante Daten können vorhanden sein, wenn Informationen wiederholt oder dupliziert werden. Dies kann zu erhöhtem Speicherbedarf und Inkonsistenzen führen. Redundante Daten können auftreten, wenn Informationen in mehreren Tabellen gespeichert werden, anstatt in einer zentralisierten Form.
