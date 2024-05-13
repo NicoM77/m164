@@ -112,3 +112,6 @@ CREATE TABLE Tour_Location (
     FOREIGN KEY (LocationID) REFERENCES Location(LocationID)
 );
 ```
+
+## ERM
+![ERM vom Code](../img/01Tourplaner.png)
