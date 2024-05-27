@@ -16,47 +16,153 @@ CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
 USE `mydb` ;
 
 -- -----------------------------------------------------
--- Table `Person`
+-- Table `Ortschaft`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Person` ;
+DROP TABLE IF EXISTS `Ortschaft` ;
 
-CREATE TABLE IF NOT EXISTS `Person` (
-  `PS_Person_ID` INT NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(30) NULL,
-  `Vorname` VARCHAR(15) NULL,
-  `Grösse` DECIMAL(3) NULL,
-  PRIMARY KEY (`PS_Person_ID`),
-  UNIQUE INDEX `PS_Person_UNIQUE` (`PS_Person_ID` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `Ortschaft` (
+  `Ortschaft_id` INT NOT NULL,
+  `PLZ` VARCHAR(45) NOT NULL,
+  `Beschriftung` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Ortschaft_id`))
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Kleidungsstück_NI`
+-- Table `Station`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Kleidungsstück_NI` ;
+DROP TABLE IF EXISTS `Station` ;
 
-CREATE TABLE IF NOT EXISTS `Kleidungsstück_NI` (
-  `PS_Kleidungsstück_ID` INT NOT NULL AUTO_INCREMENT,
-  `Bezeichnung` VARCHAR(45) NOT NULL,
-  `Grösse` VARCHAR(3) NULL,
-  `Farbe` VARCHAR(10) NULL,
-  PRIMARY KEY (`PS_Kleidungsstück_ID`),
-  UNIQUE INDEX `PS_Kleidungsstück_ID_UNIQUE` (`PS_Kleidungsstück_ID` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `Station` (
+  `Station_id` INT NOT NULL,
+  `FK_Ortschaft` INT NOT NULL,
+  PRIMARY KEY (`Station_id`, `FK_Ortschaft`),
+  INDEX `fk_Station_Ortschaft1_idx` (`FK_Ortschaft` ASC),
+  CONSTRAINT `fk_Station_Ortschaft1`
+    FOREIGN KEY (`FK_Ortschaft`)
+    REFERENCES `Ortschaft` (`Ortschaft_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `Ausweis_I`
+-- Table `Fahrzeug`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Ausweis_I` ;
+DROP TABLE IF EXISTS `Fahrzeug` ;
 
-CREATE TABLE IF NOT EXISTS `Ausweis_I` (
-  `PS_Ausweis_ID` INT NOT NULL AUTO_INCREMENT,
-  `Bezeichnung` VARCHAR(30) NULL,
-  `Ausstellungsdatum` DATETIME NULL,
-  `Nummer` VARCHAR(30) NULL,
-  PRIMARY KEY (`PS_Ausweis_ID`),
-  UNIQUE INDEX `PS_Kleidungsstück_ID_UNIQUE` (`PS_Ausweis_ID` ASC) VISIBLE)
+CREATE TABLE IF NOT EXISTS `Fahrzeug` (
+  `Fahrzeugkennzeichner` VARCHAR(45) NOT NULL,
+  `Sitz_Plaeze` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Fahrzeugkennzeichner`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Mitarbeiter`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Mitarbeiter` ;
+
+CREATE TABLE IF NOT EXISTS `Mitarbeiter` (
+  `Mitarbeiter_id` INT NOT NULL,
+  `Vorname` VARCHAR(45) NOT NULL,
+  `Nachname` VARCHAR(45) NOT NULL,
+  `Telefonnummer` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Mitarbeiter_id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Disponent`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Disponent` ;
+
+CREATE TABLE IF NOT EXISTS `Disponent` (
+  `Disponent_id` INT NOT NULL,
+  `FK_Mitarbeiter` INT NOT NULL,
+  `Disponentennummer` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Disponent_id`, `FK_Mitarbeiter`),
+  INDEX `fk_Disponent_Mitarbeiter1_idx` (`FK_Mitarbeiter` ASC),
+  CONSTRAINT `fk_Disponent_Mitarbeiter1`
+    FOREIGN KEY (`FK_Mitarbeiter`)
+    REFERENCES `Mitarbeiter` (`Mitarbeiter_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Tour`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Tour` ;
+
+CREATE TABLE IF NOT EXISTS `Tour` (
+  `Tour_id` INT NOT NULL,
+  `FK_Fahrzeug` VARCHAR(45) NOT NULL,
+  `FK_Disponent` INT NOT NULL,
+  PRIMARY KEY (`Tour_id`),
+  INDEX `fk_Tour_Fahrzeug1_idx` (`FK_Fahrzeug` ASC),
+  INDEX `fk_Tour_Disponent1_idx` (`FK_Disponent` ASC),
+  CONSTRAINT `fk_Tour_Fahrzeug1`
+    FOREIGN KEY (`FK_Fahrzeug`)
+    REFERENCES `Fahrzeug` (`Fahrzeugkennzeichner`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Tour_Disponent1`
+    FOREIGN KEY (`FK_Disponent`)
+    REFERENCES `Disponent` (`Disponent_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Fahrer`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Fahrer` ;
+
+CREATE TABLE IF NOT EXISTS `Fahrer` (
+  `Fahrer_id` INT NOT NULL,
+  `FK_Mitarbeiter` INT NOT NULL,
+  `Fahrernummer` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`Fahrer_id`, `FK_Mitarbeiter`),
+  INDEX `fk_Fahrer_Mitarbeiter_idx` (`FK_Mitarbeiter` ASC),
+  CONSTRAINT `fk_Fahrer_Mitarbeiter`
+    FOREIGN KEY (`FK_Mitarbeiter`)
+    REFERENCES `Mitarbeiter` (`Mitarbeiter_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `Stop_in_tour`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `Stop_in_tour` ;
+
+CREATE TABLE IF NOT EXISTS `Stop_in_tour` (
+  `FK_Tour` INT NOT NULL,
+  `FK_Station` INT NOT NULL,
+  `FK_Fahrer` INT NOT NULL,
+  PRIMARY KEY (`FK_Tour`, `FK_Station`),
+  INDEX `fk_Tour_has_Station_Station1_idx` (`FK_Station` ASC),
+  INDEX `fk_Tour_has_Station_Tour1_idx` (`FK_Tour` ASC),
+  INDEX `fk_Stop_in_tour_Fahrer1_idx` (`FK_Fahrer` ASC),
+  CONSTRAINT `fk_Tour_has_Station_Tour1`
+    FOREIGN KEY (`FK_Tour`)
+    REFERENCES `Tour` (`Tour_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Tour_has_Station_Station1`
+    FOREIGN KEY (`FK_Station`)
+    REFERENCES `Station` (`Station_id`)
+    ON DELETE NO ACTION 
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Stop_in_tour_Fahrer1`
+    FOREIGN KEY (`FK_Fahrer`)
+    REFERENCES `Fahrer` (`Fahrer_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 

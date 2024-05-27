@@ -4,6 +4,8 @@
 
 Ein Tablespace ist eine logische Speichereinheit in einem Datenbanksystem, die dazu dient, verwandte logische Strukturen zu gruppieren. In Oracle-Datenbanken beispielsweise besteht ein Tablespace aus einem oder mehreren Datenfiles, die physisch auf der Festplatte gespeichert werden. Diese Datenfiles enthalten die Datenobjekte der Datenbank wie Tabellen und Indizes.
 
+Ist ein Virutles Speicher welcher im RAM gespeichert wird.
+
 Die Architektur von Tablespaces umfasst mehrere wichtige Funktionen:
 - **Speicherverwaltung:** Tablespaces helfen bei der logischen Trennung und Verwaltung von Speicherplatz, was eine optimale Nutzung und Verwaltung des Speicherplatzes ermöglicht.
 - **Leistungsoptimierung:** Durch die strategische Platzierung von Daten in verschiedenen Tablespaces, die auf unterschiedlichen Speichergeräten liegen, können die I/O-Operationen gleichmäßiger verteilt werden, was die Gesamtleistung verbessert.
@@ -31,3 +33,13 @@ Eine Storage Engine in einer Datenbank ist die Komponente, die die Art und Weise
 Beispiele für Storage Engines sind InnoDB und MyISAM in MySQL, die unterschiedliche Ansätze zur Datenverwaltung bieten und je nach Anwendungsfall ausgewählt werden können【9†source】【6†source】【7†source】.
 
 Diese Zusammenfassungen bieten einen Überblick über die wichtigen Konzepte und ihre Funktionen in der Datenbankverwaltung.
+
+
+#### 4. **Non-/Identifying Relationship**
+Um eine Identifying Relationship im Schema zu erstellen, wählen Sie die nicht gestrichelte Linie aus. Im Skript sieht das dann folgendermaßen aus:
+
+```sql
+PRIMARY KEY (FK_Tour, FK_Station),
+```
+
+Stellen Sie sicher, dass Sie die richtigen Fremdschlüssel (FK) verwenden und die Syntax korrekt ist, um eine fehlerfreie Ausführung zu gewährleisten.
